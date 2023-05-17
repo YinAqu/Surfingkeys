@@ -758,14 +758,21 @@ function createAPI(clipboard, insert, normal, hints, visual, front, browser) {
                     }});
                 }
             } else {
-                front.performInlineQuery(word, {
-                    top: b.top,
-                    left: b.left,
-                    height: b.height,
-                    width: b.width
-                }, function (pos, queryResult) {
-                    dispatchSKEvent('showBubble', [pos, queryResult, false]);
-                });
+                if (front.performInlineQuery) {
+                    front.performInlineQuery(word, {
+                        top: b.top,
+                        left: b.left,
+                        height: b.height,
+                        width: b.width
+                    }, function (pos, queryResult) {
+                        dispatchSKEvent('showBubble', [pos, queryResult, false]);
+                    });
+                } else if (front.contentCommand) {
+                    front.contentCommand({
+                        action: 'updateInlineQuery',
+                        word: word
+                    });
+                }
             }
         });
     });
